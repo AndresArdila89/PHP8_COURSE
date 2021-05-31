@@ -17,22 +17,62 @@ class ShopProduct
     public $producerFirstName;
     public $price;
 
+    private int|float $discount = 0;
+
     // defining the class constructor
+    // using constructor property promotion
     public function __construct(
-        $title,
-        $producerMainName,
-        $producerFirstName,
-        $price
+        private string $title,
+        private string $producerMainName,
+        private string $producerFirstName,
+        protected int|float $price
     )
     {
-        $this->title = $title;
-        $this->producerMainName = $producerMainName;
-        $this->producerFirstName = $producerFirstName;
-        $this->price = $price;
+        /**
+         * In PHP 8 by including a visivility keyword
+         * for the constructor arguments, you can combine them with 
+         * property declaration and assign a value to them at the same
+         * time.
+         */
+        // $this->title = $title;
+        // $this->producerMainName = $producerMainName;
+        // $this->producerFirstName = $producerFirstName;
+        // $this->price = $price;
     }
 
     // Defining the methods
     // :string defines the type the function must return
+    public function getProducerFirstName():string
+    {
+        return $this->getProducerFirstName;
+    }
+
+    public function getProducerLastName():string
+    {
+        return $this->producerMainName;
+    }
+
+    public function setDiscount(int|float $discount):void
+    {
+        $this->discount = $discount;
+    }
+    
+    // Using union type forcing the funtion to return int or float
+    public function getDiscount():int|float
+    {
+        return $this->discount;
+    }
+
+    public function getTitle():string
+    {
+        return $this->title;
+    }
+    // Using union type forcing the funtion to return int or float
+    public function getPrice():int|float
+    {
+        return ($this->price - $this->discount);
+    }
+
     public function getProducer(): string
     {
         return $this->producerMainName . " " . $this->producerFirstName;
@@ -49,17 +89,17 @@ class ShopProduct
 
 class BookProduct extends ShopProduct
 {
-    public $numPages;
+    
 
     public function __construct(
         string $title,
         string $producerMainName,
         string $producerFirstName,
         float $price,
-        int $numPages
+        private int $numPages
     )
     {
-        // calling the parent constructor using the parent:: 
+        // calling the parent constructor using the parent:: keyword
         parent::__construct(
             $title,
             $producerMainName,
@@ -69,10 +109,9 @@ class BookProduct extends ShopProduct
         /**
          *  This property belongs to the child 
          *  a parent should not have access to a child information
+         * 
+         *  $this->numPages = $numPages;
          */ 
-
-        $this->numPages = $numPages;
-
     }
 
     // Defining the methods 
@@ -89,19 +128,28 @@ class BookProduct extends ShopProduct
 
         return $base;
     }
+
+    public function getPrice():int|float
+    {
+        return $this->price;
+    }
 }
 
 class CdProduct extends ShopProduct
 {
     // Defining the property of the child
-    public $playLenght;
+    // public $playLenght;
+    /**
+     * There is no need to declare the $playLenght property
+     * since we are using the constructor property promotion
+     */
 
     public function __construct(
         string $title,
         string $firstName,
         string $lastName,
         int $price,
-        string $playLenght
+        private string $playLenght // <-- Constructor property promotion 
     )
     {
         // calling the parent ShopProduct class constructor
@@ -109,12 +157,15 @@ class CdProduct extends ShopProduct
             $title,
             $firstName,
             $lastName,
-            $price,
-            $playLenght
+            $price
         );
 
         // This is the child CdProduct property
-        $this->playLenght = $playLenght;
+        // $this->playLenght = $playLenght;
+        /**
+         * There is no need to assign a value to the property 
+         * Since we are using the constructo property promotion
+         */
 
     }
 
@@ -129,6 +180,29 @@ class CdProduct extends ShopProduct
     {
         $base = parent::getSummaryLine();
         $base .= ": Playing time - {$this->playLenght}";
+    }
+}
+
+
+class ShopProductWriter
+{
+    private $products = [];
+
+    public function addProducts(ShopProduct $shopProduct):void
+    {
+        $this->product[] = $shopProduct;
+    }
+
+    public function write():void
+    {
+        $str = "";
+        foreach($products as $shopProduct)
+        {
+            $str .= "{$shopProduct->title}: ";
+            $str .= $shopProduct->getProducer();
+            $str .= " ({$shopProduct->getPrice()})\n";
+            print $str; 
+        }
     }
 }
 
