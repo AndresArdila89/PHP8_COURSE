@@ -1,5 +1,9 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 $BR = "<br>";
+echo "working....";
 /**
  * ----------- OBJECTS BASICS -------------
  * 
@@ -12,10 +16,10 @@ $BR = "<br>";
 class ShopProduct
 {
     // Defining or declaring the properties of a class
-    public $title;
-    public $producerMainName;
-    public $producerFirstName;
-    public $price;
+    // public $title;
+    // public $producerMainName;
+    // public $producerFirstName;
+    // public $price;
 
     private int|float $discount = 0;
 
@@ -85,7 +89,6 @@ class ShopProduct
         return $base;
     }
 }
-
 
 class BookProduct extends ShopProduct
 {
@@ -188,21 +191,22 @@ class ShopProductWriter
 {
     private $products = [];
 
-    public function addProducts(ShopProduct $shopProduct):void
+    public function addProduct(ShopProduct $shopProduct):void
     {
-        $this->product[] = $shopProduct;
+        $this->products[] = $shopProduct;
     }
 
     public function write():void
     {
         $str = "";
-        foreach($products as $shopProduct)
+        foreach($this->products as $shopProduct)
         {
-            $str .= "{$shopProduct->title}: ";
+            $str .= "{$shopProduct->getTitle()}: ";
             $str .= $shopProduct->getProducer();
             $str .= " ({$shopProduct->getPrice()})\n";
-            print $str; 
         }
+        
+        print $str; 
     }
 }
 
@@ -218,7 +222,7 @@ class ShopProductWriter
  * 
  */
 
- $product1 = new ShopProduct("The new Title","Andres","Ardila",99.99);
+ //$product1 = new ShopProduct("The new Title","Andres","Ardila",99.99);
 
 // $product2 = new ShopProduct();
  
@@ -229,9 +233,9 @@ class ShopProductWriter
 // $product2->title = "The Sky";
 
 
- print $product1->getProducer();
- print $BR;
- print $product1->getSummaryLine();
+//  print $product1->getProducer();
+//  print $BR;
+//  print $product1->getSummaryLine();
 
  // $product2 is a child of the class ShopProduct
  $product2 = new BookProduct(
@@ -242,9 +246,14 @@ class ShopProductWriter
                                 883
                             );
 
+ $list = new ShopProductWriter();
+ $list->addProduct($product2);
+
+ $list->write();
 
  echo '<pre>';
- var_dump($product1);
  var_dump($product2);
  echo '</pre>';
+
+
 
